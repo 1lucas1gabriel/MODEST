@@ -16,10 +16,8 @@ model Kinematic_6DOF "Equacoes cinematicas para 6 eixos diferentes"
     Placement(visible = true, transformation(origin = {-30, 76}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   MODEST.Componentes.Gate6_Or gate6_Or annotation(
     Placement(visible = true, transformation(origin = {-89, -51}, extent = {{11, -11}, {-11, 11}}, rotation = 0)));
-  Modelica_DeviceDrivers.Blocks.InputDevices.KeyboardKeyInput BotaoStart(keyCode = "A") annotation(
+  Modelica_DeviceDrivers.Blocks.InputDevices.KeyboardKeyInput BotaoStart(keyCode = "S") annotation(
     Placement(visible = true, transformation(origin = {-171, 24}, extent = {{-11, -10}, {11, 10}}, rotation = 0)));
-  Modelica_DeviceDrivers.Blocks.OperatingSystem.SynchronizeRealtime synchronizeRealtime annotation(
-    Placement(visible = true, transformation(origin = {-170, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   ROS_Bridge.Blocks.ROS_Sampler rOS_Sampler(nin = 6, nout = 6, portNumber = 9091, startTime = 0.5)  annotation(
     Placement(visible = true, transformation(origin = {90, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   MODEST.Componentes.Controlador2Step controlador2Step annotation(
@@ -87,10 +85,34 @@ equation
 	  de velocidade e aceleração máxima são definidos de acordo com cada eixo.
 	  </p>
 	  <p>
-	  Os valores são transmitidos pelo bloco ROS_SAMPLER, que envia os valores de posição
-	  para o nó Mod_Ros, que por sua vez <b>publica os valores no tópico /model_values.</b>
-	  Os valores de go2Pos são recebidos do mesmo ROS_SAMPLER e são obtidos (um valor para 
-	  cada	posição) do tópico <b>/control_values</b>.
+	  <b>O movimento só é efetuado quando ocorre a ativação do botão de Start 
+	  (letra 'S' do teclado do computador) durante a simulação do modelo.</b>
 	  </p>
+	  <p>
+	  Os valores são transmitidos pelo bloco ROS_SAMPLER, que envia os valores de 
+	  posição para o nó Mod_Ros, que por sua vez <b>publica os valores no tópico 
+	  /model_values.</b>
+	  Os valores de go2Pos são recebidos do mesmo ROS_SAMPLER e são obtidos 
+	  (um valor para cada posição) do tópico <b>/control_values</b>.
+	  </p>
+	  <b>OBSERVAÇÃO 1: Tenha certeza que 3 Bibliotecas</b> estão disponíveis: <b>
+	  Modelica_DeviceDrivers,ROS_Bridge e Modelica_Synchronous.</b> (Esta ultima é 
+	  uma dependência para correto funcionamento da biblioteca Modelica_DeviceDrivers 
+	  para algumas funções e é requisitada devido operações de sincronização e tempo).
+	  </p>
+	  <p>
+		<b>OBSERVAÇÃO 2:</b> <b>Simulações em Tempo Real</b> podem ser executadas com:
+		<ol>
+		  <li>flag de simulação <b>'-rt=1'</b> no setup de simulação [via 
+		  OpenModelica].</li>
+		  <li>Bloco <b>'SynchronizeRealtime'</b> da biblioteca 
+		  <b>Modelica_DeviceDrivers.
+		  </b></li>
+		  <li>Interactive Simulation [via OpenModelica]</li> 
+		</ol>
+	  Existem bugs com a manipulação de eventos e/ou simulações longas por parte dos
+	  Solvers do OpenModelica que podem causar erros. <b>EVITE Número de Intervalos
+	  maiores de 220000</b> no setup de simulação.
+      </p>
 	  </html>"));
 end Kinematic_6DOF;

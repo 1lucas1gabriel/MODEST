@@ -1,6 +1,6 @@
 within MODEST.Examples;
 
-model Sistema_Esteira "Este modelo representa um ambiente com uma esteira e um
+model Sistema_Esteira "Ambiente com uma esteira e um
  controlador, com uma abordagem de interação do usuário"
  extends Modelica.Icons.Example;
  MODEST.Componentes.ControladorEsteira controladorEsteira annotation(
@@ -36,5 +36,45 @@ equation
     Line(points = {{76, -16}, {70, -16}, {70, -14}, {44, -14}, {44, -14}}, color = {255, 0, 255}));
 
 annotation(
-    Diagram(coordinateSystem(extent = {{-200, -100}, {200, 100}})));
+    Diagram(coordinateSystem(extent = {{-200, -100}, {200, 100}})),
+    Documentation(info="<html>
+    <p>
+    <b>Sistema_Esteira é um modelo de uma ambiente com uma esteira e um controlador 
+    associado a esta.</b> O Controlador coordena as ações de inicialização, pausa e 
+    retomada da movimentação da esteira (cujo equacionamento é baseada no bloco 
+    kinematic com adaptações).
+    </p>
+    <p>
+    Para uma abordagem de interação do usuário com a simulação utiliza-se <b>botões de
+    entrada de comando por meio do teclado</b>, disponibilizados graças a biblioteca 
+    <b>Modelica_DeviceDrivers.</b><br>
+    Outra abordagem é a comunicação da simulação com um nó do sistema ROS. Deve-se 
+    utilizar a biblioteca <b>ROS_Bridge</b> para a ponte de comunicação.
+    </p>
+    <p>
+    Informações mais específicas sobre o funcionamento da esteira e do controlador 
+    podem ser encontradas na seção de informações dos blocos Esteira e do 
+    Controlador_Esteira deste mesmo pacote.
+    </p>
+    <p>
+    <b>OBSERVAÇÃO 1: Tenha certeza que 3 Bibliotecas</b> estão disponíveis: <b>
+    Modelica_DeviceDrivers,ROS_Bridge e Modelica_Synchronous.</b> (Esta ultima é
+    uma dependência para correto funcionamento da biblioteca Modelica_DeviceDrivers 
+    para algumas funções e é requisitada devido operações de sincronização e tempo).
+    </p>
+	<p>
+		<b>OBSERVAÇÃO 2:</b> <b>Simulações em Tempo Real</b> podem ser executadas com:
+		<ol>
+		  <li>flag de simulação <b>'-rt=1'</b> no setup de simulação [via 
+		  OpenModelica].</li>
+		  <li>Bloco <b>'SynchronizeRealtime'</b> da biblioteca 
+		  <b>Modelica_DeviceDrivers.
+		  </b></li>
+		  <li>Interactive Simulation [via OpenModelica]</li> 
+		</ol>
+	  Existem bugs com a manipulação de eventos e/ou simulações longas por parte dos
+	  Solvers do OpenModelica que podem causar erros. <b>EVITE Número de Intervalos
+	  maiores de 220000</b> no setup de simulação.
+      </p>
+    </html>"));
 end Sistema_Esteira;
