@@ -3,39 +3,55 @@ within MODEST.Examples;
 model Sistema_Esteira "Ambiente com uma esteira e um
  controlador, com uma abordagem de interação do usuário"
  extends Modelica.Icons.Example;
- MODEST.Componentes.ControladorEsteira controladorEsteira annotation(
-    Placement(visible = true, transformation(origin = {-67, -1}, extent = {{-23, -23}, {23, 23}}, rotation = 0)));
- MODEST.Componentes.Esteira esteira(Aceleracao = 1, L = 2, Raio = 0.1, Velocidade = 1)  annotation(
-    Placement(visible = true, transformation(origin = {19, -1}, extent = {{-21, -21}, {21, 21}}, rotation = 0)));
+ MODEST.Componentes.Esteira esteira(Aceleracao = 0.5, Velocidade = 0.2)  annotation(
+    Placement(visible = true, transformation(origin = {10, 34}, extent = {{-26, -26}, {26, 26}}, rotation = 0)));
+ MODEST.Componentes.ControladorEsteira controladorEsteira(qtdSensores = 4)  annotation(
+    Placement(visible = true, transformation(origin = {-76, 34}, extent = {{-26, -26}, {26, 26}}, rotation = 0)));
  Modelica_DeviceDrivers.Blocks.InputDevices.KeyboardKeyInput Start(keyCode = "S")  annotation(
-    Placement(visible = true, transformation(origin = {-170, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
- Modelica_DeviceDrivers.Blocks.InputDevices.KeyboardKeyInput Pause(keyCode = "P")  annotation(
-    Placement(visible = true, transformation(origin = {-170, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
- Modelica_DeviceDrivers.Blocks.InputDevices.KeyboardKeyInput Continue(keyCode = "C")  annotation(
-    Placement(visible = true, transformation(origin = {-170, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
- ROS_Bridge.Blocks.ROS_Sampler rOS_Sampler(nin = 2, nout = 1, portNumber = 9091, startTime = 0.5)  annotation(
-    Placement(visible = true, transformation(origin = {146, 0}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
- Modelica.Blocks.Math.BooleanToReal booleanToReal annotation(
-    Placement(visible = true, transformation(origin = {84, -16}, extent = {{-6, -6}, {6, 6}}, rotation = 0)));
+    Placement(visible = true, transformation(origin = {-168, 52}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
+ ROS_Bridge.Blocks.ROS_Sampler rOS_Sampler(nin = 2, nout = 4, portNumber = 9091, startTime = 0.5)  annotation(
+    Placement(visible = true, transformation(origin = {139, 35}, extent = {{-21, -21}, {21, 21}}, rotation = 0)));
+ Modelica.Blocks.Math.BooleanToReal converteMoving "Converte Moving de Booleano para Real" annotation(
+    Placement(visible = true, transformation(origin = {73, 17}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+ Modelica.Blocks.Math.RealToBoolean converteS1(threshold = 1)  "Converte informacao do Sensor de Real para Booleano" annotation(
+    Placement(visible = true, transformation(origin = {-173, -67}, extent = {{-7, -7}, {7, 7}}, rotation = 90)));
+ Modelica.Blocks.Math.RealToBoolean converteS2(threshold = 1)  "Converte informacao do Sensor de Real para Booleano" annotation(
+    Placement(visible = true, transformation(origin = {-153, -67}, extent = {{-7, -7}, {7, 7}}, rotation = 90)));
+ Modelica.Blocks.Math.RealToBoolean converteS3(threshold = 1)  "Converte informacao do Sensor de Real para Booleano" annotation(
+    Placement(visible = true, transformation(origin = {-133, -67}, extent = {{-7, -7}, {7, 7}}, rotation = 90)));
+ Modelica.Blocks.Math.RealToBoolean converteS4(threshold = 1)  "Converte informacao do Sensor de Real para Booleano" annotation(
+    Placement(visible = true, transformation(origin = {-113, -67}, extent = {{-7, -7}, {7, 7}}, rotation = 90)));
 equation
-  connect(controladorEsteira.gatilho, esteira.gatilho) annotation(
-    Line(points = {{-42, 0}, {-8, 0}, {-8, -2}, {-6, -2}}, color = {255, 0, 255}));
- connect(esteira.moving, controladorEsteira.fdback_mov) annotation(
-    Line(points = {{44, -14}, {52, -14}, {52, -38}, {-102, -38}, {-102, -16}, {-92, -16}, {-92, -16}}, color = {255, 0, 255}));
- connect(Start.keyState, controladorEsteira.start_mov) annotation(
-    Line(points = {{-158, 30}, {-146, 30}, {-146, 14}, {-92, 14}, {-92, 16}}, color = {255, 0, 255}));
- connect(Pause.keyState, controladorEsteira.pause_mov) annotation(
-    Line(points = {{-158, -10}, {-146, -10}, {-146, 6}, {-92, 6}, {-92, 4}}, color = {255, 0, 255}));
- connect(Continue.keyState, controladorEsteira.continue_mov) annotation(
-    Line(points = {{-158, -50}, {-140, -50}, {-140, -6}, {-92, -6}, {-92, -6}}, color = {255, 0, 255}));
- connect(esteira.posParticula, rOS_Sampler.u[1]) annotation(
-    Line(points = {{44, 12}, {120, 12}, {120, 0}, {122, 0}}, color = {0, 0, 127}));
- connect(booleanToReal.y, rOS_Sampler.u[2]) annotation(
-    Line(points = {{90, -16}, {120, -16}, {120, 0}, {122, 0}}, color = {0, 0, 127}));
- connect(booleanToReal.u, esteira.moving) annotation(
-    Line(points = {{76, -16}, {70, -16}, {70, -14}, {44, -14}, {44, -14}}, color = {255, 0, 255}));
-
-annotation(
+  connect(esteira.velocidade, rOS_Sampler.u[1]) annotation(
+    Line(points = {{40, 34}, {112, 34}, {112, 36}, {114, 36}}, color = {0, 0, 127}));
+ connect(esteira.moving, converteMoving.u) annotation(
+    Line(points = {{40, 18}, {64, 18}, {64, 18}, {64, 18}}, color = {255, 0, 255}));
+ connect(rOS_Sampler.u[2], converteMoving.y) annotation(
+    Line(points = {{114, 36}, {112, 36}, {112, 18}, {80, 18}, {80, 18}}, color = {0, 0, 127}));
+ connect(Start.keyState, controladorEsteira.start) annotation(
+    Line(points = {{-153, 52}, {-104, 52}}, color = {255, 0, 255}));
+ connect(controladorEsteira.gatilho, esteira.gatilho) annotation(
+    Line(points = {{-48, 34}, {-20, 34}, {-20, 34}, {-20, 34}}, color = {255, 0, 255}));
+ connect(converteS1.y, controladorEsteira.sensores[1]) annotation(
+    Line(points = {{-172, -60}, {-172, -60}, {-172, -40}, {-140, -40}, {-140, 34}, {-106, 34}, {-106, 34}}, color = {255, 0, 255}));
+ connect(converteS2.y, controladorEsteira.sensores[2]) annotation(
+    Line(points = {{-152, -60}, {-154, -60}, {-154, -40}, {-140, -40}, {-140, 34}, {-106, 34}, {-106, 34}}, color = {255, 0, 255}));
+ connect(converteS3.y, controladorEsteira.sensores[3]) annotation(
+    Line(points = {{-132, -60}, {-132, -60}, {-132, -40}, {-140, -40}, {-140, 34}, {-106, 34}, {-106, 34}}, color = {255, 0, 255}));
+ connect(converteS4.y, controladorEsteira.sensores[4]) annotation(
+    Line(points = {{-112, -60}, {-112, -60}, {-112, -40}, {-140, -40}, {-140, 34}, {-106, 34}, {-106, 34}}, color = {255, 0, 255}));
+ connect(controladorEsteira.fdback_mov, esteira.moving) annotation(
+    Line(points = {{-104, 16}, {-114, 16}, {-114, -8}, {40, -8}, {40, 18}, {40, 18}}, color = {255, 0, 255}));
+ connect(converteS1.u, rOS_Sampler.y[1]) annotation(
+    Line(points = {{-172, -76}, {-174, -76}, {-174, -92}, {174, -92}, {174, 34}, {162, 34}, {162, 36}}, color = {0, 0, 127}));
+ connect(converteS2.u, rOS_Sampler.y[2]) annotation(
+    Line(points = {{-152, -76}, {-154, -76}, {-154, -92}, {174, -92}, {174, 34}, {162, 34}, {162, 36}}, color = {0, 0, 127}));
+ connect(converteS3.u, rOS_Sampler.y[3]) annotation(
+    Line(points = {{-132, -76}, {-134, -76}, {-134, -92}, {174, -92}, {174, 34}, {162, 34}, {162, 36}}, color = {0, 0, 127}));
+ connect(converteS4.u, rOS_Sampler.y[4]) annotation(
+    Line(points = {{-112, -76}, {-112, -76}, {-112, -92}, {174, -92}, {174, 34}, {162, 34}, {162, 36}}, color = {0, 0, 127}));
+protected
+ annotation(
     Diagram(coordinateSystem(extent = {{-200, -100}, {200, 100}})),
     Documentation(info="<html>
     <p>
@@ -50,6 +66,12 @@ annotation(
     <b>Modelica_DeviceDrivers.</b><br>
     Outra abordagem é a comunicação da simulação com um nó do sistema ROS. Deve-se 
     utilizar a biblioteca <b>ROS_Bridge</b> para a ponte de comunicação.
+    </p>
+    <p>
+    As entradas para o Controlador são um booleano para <b>'start'</b> e para o 
+    <b>'feedback'</b> de movimentação da esteira e um vetor de booleano para os 
+    <b>'sensores'.</b> Podem ser incluídos quantos sensores forem necessários 
+    para o controle da esteira.
     </p>
     <p>
     Informações mais específicas sobre o funcionamento da esteira e do controlador 

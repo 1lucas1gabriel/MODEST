@@ -3,14 +3,12 @@ within MODEST.Examples;
     extends Modelica.Icons.Example;
   ROS_Bridge.Blocks.ROS_Sampler rOS_Sampler(nin = 4, nout = 1, portNumber = 9091, startTime = 0.5)  annotation(
     Placement(visible = true, transformation(origin = {108, -12}, extent = {{-26, -26}, {26, 26}}, rotation = 0)));
-  MODEST.Componentes.Kinematic kinematic(q_begin = 0, qd_max = 1, qdd_max = 1)  annotation(
+  MODEST.Componentes.Kinematic kinematic(q_begin = 0, qd_max = 4, qdd_max = 2)  annotation(
     Placement(visible = true, transformation(origin = {-51, -11}, extent = {{-29, -29}, {29, 29}}, rotation = 0)));
-  Modelica.Blocks.Sources.BooleanStep booleanStep(startTime = 5, startValue = false)  annotation(
-    Placement(visible = true, transformation(origin = {-130, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Math.BooleanToReal booleanToReal annotation(
-    Placement(visible = true, transformation(origin = {30, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));  equation
-  connect(booleanStep.y, kinematic.gatilho) annotation(
-    Line(points = {{-118, -30}, {-84, -30}, {-84, -34}, {-82, -34}}, color = {255, 0, 255}));
+    Placement(visible = true, transformation(origin = {30, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica_DeviceDrivers.Blocks.InputDevices.KeyboardKeyInput Botao_G(keyCode = "G")  annotation(
+    Placement(visible = true, transformation(origin = {-172, -38}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));  equation
   connect(booleanToReal.u, kinematic.moving) annotation(
     Line(points = {{18, -50}, {-18, -50}, {-18, -34}, {-20, -34}}, color = {255, 0, 255}));
   connect(booleanToReal.y, rOS_Sampler.u[4]) annotation(
@@ -23,8 +21,9 @@ within MODEST.Examples;
     Line(points = {{-20, -20}, {74, -20}, {74, -12}, {76, -12}}, color = {0, 0, 127}));
   connect(kinematic.go2Pos, rOS_Sampler.y[1]) annotation(
     Line(points = {{-82, 12}, {-96, 12}, {-96, 50}, {154, 50}, {154, -12}, {136, -12}, {136, -12}}, color = {0, 0, 127}));
-
-annotation(
+  connect(Botao_G.keyState, kinematic.gatilho) annotation(
+    Line(points = {{-154, -38}, {-86, -38}, {-86, -34}, {-82, -34}}, color = {255, 0, 255}));
+  annotation(
       Diagram(coordinateSystem(extent = {{-200, -100}, {200, 100}})),
       Documentation(info = "<html>
       <p>

@@ -3,128 +3,112 @@ within MODEST.Componentes;
 block ControladorEsteira "Controlador do bloco Esteira"
   extends Modelica.Blocks.Icons.Block;
   extends MODEST.Icons.Chip;
-  inner Modelica.StateGraph.StateGraphRoot stateGraphRoot									annotation(
-    Placement(visible = true, transformation(origin = {170, -70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.StateGraph.InitialStep BEGIN(nIn = 1, nOut = 1)									annotation(
-    Placement(visible = true, transformation(origin = {-78, 18}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
-  Modelica.StateGraph.StepWithSignal MOVING(nIn = 3, nOut = 2)								annotation(
-    Placement(visible = true, transformation(origin = {34, 18}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
-  Modelica.StateGraph.Step CHANGE(nIn = 1, nOut = 1)										annotation(
-    Placement(visible = true, transformation(origin = {81, 75}, extent = {{13, -13}, {-13, 13}}, rotation = 0)));
-  Modelica.StateGraph.Step PAUSED(nIn = 1, nOut = 1)										annotation(
-    Placement(visible = true, transformation(origin = {35, -59}, extent = {{13, -13}, {-13, 13}}, rotation = 0)));
-  
-  Modelica.StateGraph.Transition T1(condition = fallingEdgeStart)							annotation(
-    Placement(visible = true, transformation(origin = {-22, 18}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
-  Modelica.StateGraph.Transition T2(condition = notMov)									annotation(
-    Placement(visible = true, transformation(origin = {85, 17}, extent = {{-15, -15}, {15, 15}}, rotation = 0)));
-  Modelica.StateGraph.Transition T3(condition = true, enableTimer = true, waitTime = 0.1)annotation(
-    Placement(visible = true, transformation(origin = {28, 76}, extent = {{18, -18}, {-18, 18}}, rotation = 0)));
-  Modelica.StateGraph.Transition T4(condition = fallingEdgePause)							annotation(
-    Placement(visible = true, transformation(origin = {74, -58}, extent = {{14, -14}, {-14, 14}}, rotation = 0)));
-  Modelica.StateGraph.Transition T5(condition = fallingEdgeContinue)						annotation(
-    Placement(visible = true, transformation(origin = {-4, -58}, extent = {{14, -14}, {-14, 14}}, rotation = 0)));
-  
-  Modelica.Blocks.Interfaces.BooleanOutput gatilho "Gatilho para ativacao do movimento"	annotation(
-    Placement(visible = true, transformation(origin = {56, -14}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {110, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  
-  Modelica.Blocks.Interfaces.BooleanInput start_mov "Evento para Iniciar movimentacao"	annotation(
-    Placement(visible = true, transformation(origin = {-189, 69}, extent = {{-9, -9}, {9, 9}}, rotation = 0), iconTransformation(origin = {-110, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Interfaces.BooleanInput fdback_mov "Feedback da movimentacao"			annotation(
-    Placement(visible = true, transformation(origin = {-187, 31}, extent = {{-9, -9}, {9, 9}}, rotation = 0), iconTransformation(origin = {-110, -68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Interfaces.BooleanInput pause_mov "Pausar a movimentacao"				annotation(
-    Placement(visible = true, transformation(origin = {-189, -9}, extent = {{-9, -9}, {9, 9}}, rotation = 0), iconTransformation(origin = {-110, 26}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Interfaces.BooleanInput continue_mov "Continuar movimentacao Anterior" annotation(
-    Placement(visible = true, transformation(origin = {-189, -49}, extent = {{-9, -9}, {9, 9}}, rotation = 0), iconTransformation(origin = {-110, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  
-  Modelica.Blocks.Logical.FallingEdge fallingEdge1											annotation(
-    Placement(visible = true, transformation(origin = {-150, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Logical.FallingEdge fallingEdge2											annotation(
-    Placement(visible = true, transformation(origin = {-150, -10}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Logical.FallingEdge fallingEdge3											annotation(
-    Placement(visible = true, transformation(origin = {-150, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Logical.Not notM															annotation(
-    Placement(visible = true, transformation(origin = {-150, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    
-  output Boolean fallingEdgeStart;
-  output Boolean fallingEdgePause;
-  output Boolean fallingEdgeContinue;
-  output Boolean notMov;
-  
-equation
 
-  fallingEdgeStart = fallingEdge1.y;
-  fallingEdgePause = fallingEdge2.y;
-  fallingEdgeContinue = fallingEdge3.y;
-  notMov = notM.y;
-  
-  connect(BEGIN.outPort[1], T1.inPort)	 annotation(
-    Line(points = {{-61, 18}, {-28, 18}}));
-  connect(MOVING.active, gatilho)		 annotation(
-    Line(points = {{34, 0}, {34, -14}, {56, -14}}, color = {255, 0, 255}));
-  connect(fallingEdge1.u, start_mov)	 annotation(
-    Line(points = {{-162, 70}, {-184, 70}, {-184, 70}, {-188, 70}}, color = {255, 0, 255}));
-  connect(notM.u, fdback_mov)			 annotation(
-    Line(points = {{-162, 30}, {-187, 30}, {-187, 31}}, color = {255, 0, 255}));
-  connect(T3.outPort, MOVING.inPort[2]) annotation(
-    Line(points = {{26, 76}, {2, 76}, {2, 20}, {16, 20}, {16, 18}}));
-  connect(T1.outPort, MOVING.inPort[1]) annotation(
-    Line(points = {{-20, 18}, {16, 18}, {16, 18}, {16, 18}}));
-  connect(CHANGE.outPort[1], T3.inPort) annotation(
-    Line(points = {{67, 75}, {36, 75}, {36, 76}}));
-  connect(T2.outPort, CHANGE.inPort[1]) annotation(
-    Line(points = {{88, 18}, {116, 18}, {116, 74}, {96, 74}, {96, 76}}));
-  connect(PAUSED.inPort[1], T4.outPort) annotation(
-    Line(points = {{50, -58}, {72, -58}}));
-  connect(T5.inPort, PAUSED.outPort[1]) annotation(
-    Line(points = {{2, -58}, {22, -58}}));
-  connect(pause_mov, fallingEdge2.u)	 annotation(
-    Line(points = {{-188, -8}, {-164, -8}, {-164, -10}, {-162, -10}}, color = {255, 0, 255}));
-  connect(continue_mov, fallingEdge3.u) annotation(
-    Line(points = {{-188, -48}, {-164, -48}, {-164, -50}, {-162, -50}}, color = {255, 0, 255}));
-  connect(T5.outPort, MOVING.inPort[3]) annotation(
-    Line(points = {{-6, -58}, {-28, -58}, {-28, -32}, {2, -32}, {2, 16}, {16, 16}, {16, 18}}));
-  connect(MOVING.outPort[1], T2.inPort) annotation(
-    Line(points = {{50, 18}, {78, 18}, {78, 18}, {80, 18}}));
-  connect(T4.inPort, MOVING.outPort[2]) annotation(
-    Line(points = {{80, -58}, {94, -58}, {94, -32}, {70, -32}, {70, 18}, {50, 18}, {50, 18}}));
-  annotation(
+  parameter Integer qtdSensores = 1 "Número de Sensores de Leitura";
+  // ENTRADAS DE DADOS
+  Modelica.Blocks.Interfaces.BooleanInput start "Evento para Iniciar movimentacao"	  annotation(
+    Placement(visible = true, transformation(origin = {-189, 69}, extent = {{-9, -9}, {9, 9}}, rotation = 0), iconTransformation(origin = {-110, 70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.BooleanVectorInput sensores[qtdSensores]	"Conecte Sensores Aqui"	  annotation(
+    Placement(visible = true, transformation(origin = {-184, -6.66134e-16}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-112, 0}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.BooleanInput fdback_mov "Feedback da movimentacao"		  annotation(
+    Placement(visible = true, transformation(origin = {-189, -69}, extent = {{-9, -9}, {9, 9}}, rotation = 0), iconTransformation(origin = {-110, -72}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  // SAIDA DE DADOS
+  Modelica.Blocks.Interfaces.BooleanOutput gatilho										  annotation(
+    Placement(visible = true, transformation(origin = {50, -26}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {110, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  // ESTADOS
+  inner Modelica.StateGraph.StateGraphRoot stateGraphRoot								  annotation(
+    Placement(visible = true, transformation(origin = {170, -70}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.StateGraph.InitialStep COMECO(nIn = 1, nOut = 1)							  annotation(
+    Placement(visible = true, transformation(origin = {-86, 0}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
+  Modelica.StateGraph.StepWithSignal MOVENDO(nIn = 3, nOut = 2)						  annotation(
+    Placement(visible = true, transformation(origin = {17, -1}, extent = {{-13, -13}, {13, 13}}, rotation = 0)));
+  Modelica.StateGraph.Step PAUSADO(nIn = 1, nOut = 1)									  annotation(
+    Placement(visible = true, transformation(origin = {17, -57}, extent = {{13, -13}, {-13, 13}}, rotation = 0)));
+  Modelica.StateGraph.Step ATUALIZA(nIn = 1, nOut = 1)									  annotation(
+    Placement(visible = true, transformation(origin = {17, 67}, extent = {{13, -13}, {-13, 13}}, rotation = 0)));
+  // TRANSICOES
+  Modelica.StateGraph.Transition T1(condition = start)									  annotation(
+    Placement(visible = true, transformation(origin = {-54, 0}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
+  Modelica.StateGraph.Transition T2(condition = notMov.y)								  annotation(
+    Placement(visible = true, transformation(origin = {94, 0}, extent = {{-12, -12}, {12, 12}}, rotation = 0)));
+  Modelica.StateGraph.Transition T3(condition = true, enableTimer = true, waitTime = 0.1) annotation(
+    Placement(visible = true, transformation(origin = {-18, 68}, extent = {{12, -12}, {-12, 12}}, rotation = 0)));
+  Modelica.StateGraph.Transition T4(condition = AlgumaCaptura)							  annotation(
+    Placement(visible = true, transformation(origin = {58, -58}, extent = {{12, -12}, {-12, 12}}, rotation = 0)));
+  Modelica.StateGraph.Transition T5(condition = NenhumaCaptura)						  annotation(
+    Placement(visible = true, transformation(origin = {-18, -58}, extent = {{12, -12}, {-12, 12}}, rotation = 0)));
+  //
+  Modelica.Blocks.Logical.Not notMov													  annotation(
+    Placement(visible = true, transformation(origin = {-167, -69}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+protected
+  Boolean AlgumaCaptura;
+  Boolean NenhumaCaptura;
+equation
+/* Para ativar a PAUSA da esteira algum dos sensores inicia o disparo
+	 Para desativar a PAUSA nenhum sensor deve estar ativo*/
+// Varredura em todos os sensores para captura de objetos
+  AlgumaCaptura = if Modelica.Math.BooleanVectors.anyTrue(sensores) then true else false;
+// Varredura em todos os sensores indica que nenhum captura objetos
+  NenhumaCaptura = if Modelica.Math.BooleanVectors.anyTrue(sensores) then false else true;
+//-------------------------------------------------------------------------------------
+ connect(COMECO.outPort[1], T1.inPort) annotation(
+    Line(points = {{-73, 0}, {-59, 0}}));
+ connect(MOVENDO.active, gatilho) annotation(
+    Line(points = {{18, -16}, {16, -16}, {16, -26}, {50, -26}}, color = {255, 0, 255}));
+ connect(T1.outPort, MOVENDO.inPort[1]) annotation(
+    Line(points = {{-52, 0}, {2, 0}, {2, 0}, {2, 0}}));
+ connect(T3.outPort, MOVENDO.inPort[2]) annotation(
+    Line(points = {{-20, 68}, {-30, 68}, {-30, 0}, {2, 0}, {2, 0}}));
+ connect(T5.outPort, MOVENDO.inPort[3]) annotation(
+    Line(points = {{-20, -58}, {-30, -58}, {-30, 0}, {2, 0}, {2, 0}}));
+ connect(MOVENDO.outPort[1], T2.inPort) annotation(
+    Line(points = {{30, 0}, {88, 0}, {88, 0}, {90, 0}}));
+ connect(T4.inPort, MOVENDO.outPort[2]) annotation(
+    Line(points = {{62, -58}, {68, -58}, {68, 0}, {30, 0}, {30, 0}}));
+ connect(T4.outPort, PAUSADO.inPort[1]) annotation(
+    Line(points = {{56, -58}, {32, -58}, {32, -56}, {32, -56}}));
+ connect(T5.inPort, PAUSADO.outPort[1]) annotation(
+    Line(points = {{-14, -58}, {2, -58}, {2, -56}, {4, -56}}));
+ connect(ATUALIZA.inPort[1], T2.outPort) annotation(
+    Line(points = {{32, 68}, {120, 68}, {120, 0}, {96, 0}, {96, 0}}));
+ connect(T3.inPort, ATUALIZA.outPort[1]) annotation(
+    Line(points = {{-14, 68}, {4, 68}, {4, 68}, {4, 68}}));
+ connect(fdback_mov, notMov.u) annotation(
+    Line(points = {{-188, -68}, {-176, -68}, {-176, -68}, {-176, -68}}, color = {255, 0, 255}));
+ annotation(
     Diagram(coordinateSystem(extent = {{-200, -100}, {200, 100}})),
-    Documentation(info="<html>
+    Documentation(info = "<html>
     <p>
     <b>ControladorEsteira</b> é um bloco que realiza o controle da esteira 
     deste mesmo pacote. ControladorEsteira foi implementado com a biblioteca 
     de estados StateGraph do Modelica.
     </p>
     <p>
-    BEGIN é definido como etapa inicial da máquina de estados. MOVING 
-    é o estado seguinte, cuja ativação depende de uma entrada em 'start_mov'. 
-    No momento que ocorre a uma borda de descida, então a transição T1 é disparada 
-    e o estado passa a ser MOVING. <b>Devido a execução do estado MOVING o gatilho 
+    As entradas para este controlador são um booleano para <b>'start'</b> e para o 
+    <b>'feedback'</b> e um vetor de booleano para os <b>'sensores'.</b> Podem ser 
+    incluídos quantos sensores forem necessários para o controle da esteira.
+    </p>
+    <p>
+    COMECO é definido como etapa inicial da máquina de estados. MOVENDO 
+    é o estado seguinte, cuja ativação depende de uma entrada em 'start'. 
+    No momento que ocorre a ativação, a transição T1 é disparada 
+    e o estado passa a ser MOVENDO. <b>Devido a execução do estado MOVENDO o gatilho 
     que é enviado para a saída é ativado.</b>
     </p>
     <p>
-    <b>Pode-se realizar também a pausa e a continuação do processo de movimentação.
-    </b> Quando a etapa MOVING está ativada e a transição T4 é disparada (por uma 
-    borda de descida em pause_mov) a etapa passa para PAUSE. Se a transição 
-    T5 é disparada a etapa MOVING volta a ser executada.
+    <b>Pode-se realizar também a pausa e a continuação do processo de movimentação 
+    em função da entrada de sensores lidos pelo controlador.
+    </b> Quando a etapa MOVENDO está ativada e a transição T4 é disparada por um 
+    dos sensores, (qualquer sensor conectado pode ativar T4) a etapa passa para 
+    PAUSADO. 
+    Se nenhum sensor detectar objeto da esteira a transição 5 é disparada e a etapa 
+    MOVENDO volta a ser executada.
     </p>
     <p>
     Para uma abordagem prática pode-se usar os dispositivos de entrada da 
-    biblioteca <b>DeviceDrivers</b> para acionamento dos eventos de <b>START, 
-    PAUSE e CONTINUE</b> com botões do teclado.
+    biblioteca <b>DeviceDrivers</b> para acionamento dos eventos de <b>START e 
+    Sensores</b> com botões do teclado.
     </p>
     </html>"),
-  Icon(graphics = {
-  Polygon(origin = {-82, 70}, fillColor = {115, 210, 22}, fillPattern = FillPattern.Solid, 
-  points = {{-10, 10}, {-10, -10}, {10, 0}, {6, 2}, {-10, 10}}), 
-  Rectangle(origin = {-87, 26}, fillColor = {0, 12, 255}, fillPattern = FillPattern.Solid, 
-  extent = {{-3, 10}, {3, -10}}), 
-  Rectangle(origin = {-75, 26}, fillColor = {0, 12, 255}, fillPattern = FillPattern.Solid, 
-  extent = {{-3, 10}, {3, -10}}), 
-  Rectangle(origin = {-75, -22}, fillColor = {255, 0, 0}, fillPattern = FillPattern.Solid, 
-  extent = {{-3, 10}, {3, -10}}), 
-  Polygon(origin = {-85, -21}, fillColor = {255, 0, 0}, fillPattern = FillPattern.Solid, 
-  points = {{-7, 9}, {-7, -11}, {7, -1}, {7, -1}, {-7, 9}}), 
-  Text(origin = {-94, -61}, extent = {{-8, 9}, {30, -27}}, textString = "F")}));
+    Icon(coordinateSystem(initialScale = 0.1), graphics = {Polygon(origin = {-76, 71}, fillColor = {0, 255, 0}, fillPattern = FillPattern.Solid, points = {{-12, 13}, {-12, -11}, {12, 1}, {-12, 13}}), Text(origin = {-55, -86}, extent = {{-57, 34}, {1, -6}}, textString = "F")}));
 end ControladorEsteira;
